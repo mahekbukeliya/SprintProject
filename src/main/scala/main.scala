@@ -1,7 +1,8 @@
 import org.apache.spark.sql.{SparkSession, DataFrame}
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._
-import com.myproject.{DataQuality}
+import com.myproject.{DataQuality, Transformation}
+import com.myproject.Postgre
 
 object main {
   def main(args: Array[String]): Unit = {
@@ -36,8 +37,12 @@ object main {
     val cleanedDF = DataQuality.runDataQualityPipeline(rawDF)(spark)
 
     //  Call Transformation Pipeline
-//    Transformation.runAllTransformations(cleanedDF)
+    Transformation.runAllTransformations(cleanedDF)
 
+    val badRecordsDF = DataQuality.getBadRecords(rawDF)(spark)
+    val filledBadRecordsDF = DataQuality.getFilledBadRecords(badRecordsDF)
+    Postgre.uploadCleanedData(cleanedDF)
+    Postgre.uploadDirtyData(filledBadRecordsDF)
     spark.stop()
   }
 }
