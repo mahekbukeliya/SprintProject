@@ -1,6 +1,7 @@
 import org.apache.spark.sql.{SparkSession, DataFrame}
-import org.apache.spark.sql.types._
 import org.apache.spark.sql.functions._
+import org.apache.spark.sql.types._
+import com.myproject.{DataQuality}
 
 object main {
   def main(args: Array[String]): Unit = {
@@ -10,6 +11,10 @@ object main {
       .master("local[*]")
       .getOrCreate()
 
+    import spark.implicits._
+    spark.sparkContext.setLogLevel("ERROR")
+
+    // Define schema for JSON logs
     val logSchema = StructType(Array(
       StructField("log_id", StringType, nullable = true),
       StructField("timestamp", StringType, nullable = true),
@@ -21,21 +26,18 @@ object main {
       StructField("version", StringType, nullable = true)
     ))
 
-    val logDF = spark.read
+    // Read JSON logs
+    val rawDF = spark.read
       .schema(logSchema)
       .option("multiline", "true")
-      .json("/home/runali/log_data.json")
+      .json("/home/mahek/Dataset/raw_data.json")
 
-    // Convert timestamp to proper type (optional)
-    val logDFWithTime = logDF.withColumn(
-      "timestamp",
-      to_timestamp(col("timestamp"), "yyyy-MM-dd'T'HH:mm:ss'Z'")
-    )
+    //  Call Data Quality Pipeline
+    val cleanedDF = DataQuality.runDataQualityPipeline(rawDF)(spark)
 
-    logDFWithTime.show(5, truncate = false)
-    logDFWithTime.printSchema()
+    //  Call Transformation Pipeline
+//    Transformation.runAllTransformations(cleanedDF)
 
-    // Hello
     spark.stop()
   }
 }
