@@ -24,7 +24,7 @@ object main {
     val logDF = spark.read
       .schema(logSchema)
       .option("multiline", "true")
-      .json("/home/mahek/log_data.json")
+      .json("/home/runali/log_data.json")
 
     // Convert timestamp to proper type (optional)
     val logDFWithTime = logDF.withColumn(
@@ -35,6 +35,7 @@ object main {
     logDFWithTime.show(5, truncate = false)
     logDFWithTime.printSchema()
 
+    // Hello
     spark.stop()
   }
 }
