@@ -134,7 +134,7 @@ class DataQualityTest extends AnyFlatSpec with Matchers with BeforeAndAfterAll {
 
   "runDataQualityPipeline" should "remove bad records and return cleaned data" in {
 
-  implicit val implicitSpark: SparkSession = spark
+    implicit val implicitSpark: SparkSession = spark
 
     val rawJson = Seq(
       """{"log_id": "log1", "timestamp": "2025-10-18T08:00:00Z", "user_id": "user_123", "action": "login", "status": "success", "ip_address": "192.168.1.1", "region": "IN", "version": "v1.0"}""",
