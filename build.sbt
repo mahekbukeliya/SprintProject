@@ -28,6 +28,7 @@ libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "3.2.17" % Test,
   "org.scalatestplus" %% "mockito-4-11" % "3.2.17.0" % Test
 
+
   // "org.apache.hive" % "hive-metastore" % "3.1.3",
   // "org.apache.spark" %% "spark-hive" % sparkVersion,
   // "org.apache.hive" % "hive-exec" % "3.1.3"

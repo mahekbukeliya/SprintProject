@@ -6,8 +6,8 @@ object Postgre {
 
   val jdbcUrl = "jdbc:postgresql://localhost:5432/mydb"
   val props = new Properties()
-  props.setProperty("user", "mahek")
-  props.setProperty("password", "mahek")
+  props.setProperty("user", "myuser")
+  props.setProperty("password", "mypassword")
   props.setProperty("driver", "org.postgresql.Driver")
 
   def uploadCleanedData(df: DataFrame): Unit = {
