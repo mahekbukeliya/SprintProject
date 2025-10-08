@@ -34,13 +34,13 @@ object main {
     val rawDF = spark.read
       .schema(logSchema)
       .option("multiline", "true")
-      .json("/home/mahek/Dataset/raw_data.json")
+      .json("/home/tamanna/Dataset/raw_data.json")
 
     // Reading Modified Data
     val modifiedDF = spark.read
       .schema(logSchema)
       .option("multiline", "true")
-      .json("/home/mahek/Dataset/modified_data.json")
+      .json("/home/tamanna/Dataset/modified_data.json")
 
     //  Call Data Quality Pipeline
     val cleanedDF = DataQuality.runDataQualityPipeline(rawDF)(spark)
@@ -49,7 +49,7 @@ object main {
     cleanedModifiedDF.write
       .format("delta")
       .mode("overwrite") // or "append" if you want to keep existing data
-      .save("/home/mahek/Dataset/Logs/delta_logs")
+      .save("/home/tamanna/Dataset/Logs/delta_logs")
 
 
     //  Call Transformation Pipeline
@@ -63,12 +63,12 @@ object main {
     Postgre.uploadDirtyData(filledBadRecordsDF)
 
     // Call CDC Pipeline
-    CDC.applyCDC(cleanedDF, cleanedModifiedDF, "/home/mahek/Dataset/Logs/delta_logs")
+    CDC.applyCDC(cleanedDF, cleanedModifiedDF, "/home/tamanna/Dataset/Logs/delta_logs")
 
     // Show final Delta table
     spark.read
       .format("delta")
-      .load("/home/mahek/Dataset/Logs/delta_logs")
+      .load("/home/tamanna/Dataset/Logs/delta_logs")
       .show(false)
 
     spark.stop()
