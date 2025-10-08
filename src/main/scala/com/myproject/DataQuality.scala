@@ -149,7 +149,7 @@ object DataQuality {
       .write
       .partitionBy("region")
       .mode("overwrite")
-      .parquet("/home/mahek/Dataset/Logs/partitioned_bucketed_logs")
+      .parquet("/home/shravani/Dataset/Logs/partitioned_bucketed_logs")
 
     println("Cleaned data written to partitioned Parquet.")
 

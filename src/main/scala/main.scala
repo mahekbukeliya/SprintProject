@@ -34,13 +34,13 @@ object main {
     val rawDF = spark.read
       .schema(logSchema)
       .option("multiline", "true")
-      .json("/home/mahek/Dataset/raw_data.json")
+      .json("/home/shravani/Dataset/raw_data.json")
 
     // Reading Modified Data
     val modifiedDF = spark.read
       .schema(logSchema)
       .option("multiline", "true")
-      .json("/home/mahek/Dataset/modified_data.json")
+      .json("/home/shravani/Dataset/modified_data.json")
 
     //  Call Data Quality Pipeline
     val cleanedDF = DataQuality.runDataQualityPipeline(rawDF)(spark)
@@ -49,7 +49,7 @@ object main {
     cleanedModifiedDF.write
       .format("delta")
       .mode("overwrite") // or "append" if you want to keep existing data
-      .save("/home/mahek/Dataset/Logs/delta_logs")
+      .save("/home/shravani/Dataset/Logs/delta_logs")
 
 
     //  Call Transformation Pipeline
@@ -62,13 +62,23 @@ object main {
     Postgre.uploadCleanedData(cleanedDF)
     Postgre.uploadDirtyData(filledBadRecordsDF)
 
+    // Create or update views in PostgreSQL based on the cleaned data
+    val viewsStatus = {
+      Postgre.createAllViews()
+    }
+
+    // Create a stored procedure in PostgreSQL to summarize log data
+    val resultMessage = Postgre.createStoredProcedure()
+    // Print confirmation message about stored procedure creation
+    println(resultMessage)
+
     // Call CDC Pipeline
-    CDC.applyCDC(cleanedDF, cleanedModifiedDF, "/home/mahek/Dataset/Logs/delta_logs")
+    CDC.applyCDC(cleanedDF, cleanedModifiedDF, "/home/shravani/Dataset/Logs/delta_logs")
 
     // Show final Delta table
     spark.read
       .format("delta")
-      .load("/home/mahek/Dataset/Logs/delta_logs")
+      .load("/home/shravani/Dataset/Logs/delta_logs")
       .show(false)
 
     spark.stop()
